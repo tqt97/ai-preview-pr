@@ -80,7 +80,9 @@ final class ContextBuilder
         foreach ($graph->getGraph() as $from => $tos) {
 
             foreach ($classes as $class) {
-                if (str_starts_with($from, $class)) {
+                // The $from string in CallGraph is likely "ClassName::MethodName"
+                // The $class variable is "ClassName"
+                if (str_starts_with($from, $class . '::')) {
                     $related = array_merge($related, $tos);
                 }
             }
