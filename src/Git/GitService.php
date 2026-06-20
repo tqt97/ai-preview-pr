@@ -6,21 +6,25 @@ use RuntimeException;
 
 final class GitService
 {
+	public function __construct(
+		private string $projectRoot
+	) {}
+
+	public function getCurrentBranch(): string
+	{
+		$cmd = 'git rev-parse --abbrev-ref HEAD';
+
+		$branch = $this->run($cmd);
+
+		return trim($branch ?: 'unknown');
+	}
+
 	public function getDiff(string $baseBranch, string $currentBranch): GitDiff
 	{
 		$this->ensureGitRepository();
 
-		$diffCommand = sprintf(
-			'git diff %s...%s',
-			escapeshellarg($baseBranch),
-			escapeshellarg($currentBranch)
-		);
-
-		$rawDiff = shell_exec($diffCommand);
-
-		if ($rawDiff === null) {
-			throw new RuntimeException('Failed to execute git diff');
-		}
+		// echo $cli . PHP_EOL;
+		$rawDiff = $this->run("git diff {$baseBranch}...{$currentBranch}");
 
 		$files = $this->extractChangedFiles($rawDiff);
 
@@ -30,6 +34,19 @@ final class GitService
 			files: $files,
 			rawDiff: $rawDiff
 		);
+	}
+
+	private function run(string $command): string
+	{
+		$cwd = getcwd();
+
+		chdir($this->projectRoot);
+
+		$result = shell_exec($command);
+
+		chdir($cwd);
+
+		return $result ?? '';
 	}
 
 	/**

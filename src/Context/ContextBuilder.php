@@ -20,7 +20,6 @@ final class ContextBuilder
         $risks = $this->detectRisks($changedFiles);
 
         return new Context(
-            changedFiles: $changedFiles,
             changedClasses: $changedClasses,
             relatedNodes: $relatedNodes,
             risks: $risks

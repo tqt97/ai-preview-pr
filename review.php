@@ -1,13 +1,21 @@
-<?php
+<?php declare(strict_types=1);
 
-declare(strict_types=1);
+use Review\Support\Logger;
+use Review\Autoloader;
+use Review\Bootstrap;
 
 require_once __DIR__ . '/src/Autoloader.php';
 
-$loader = new Review\Autoloader(__DIR__ . '/src');
+$loader = new Autoloader(__DIR__ . '/src');
 
 $loader->register();
+$logger = new Logger();
+$baseBranch = $argv[1] ?? 'release';
+$projectRoot = $argv[2] ?? getcwd();
 
-$app = (new Review\Bootstrap())->boot();
+$logger->info('baseBranch: ' . $baseBranch);
+$logger->info('projectRoot: ' . $projectRoot);
 
-exit($app->run($argv));
+$app = (new Bootstrap())->boot($projectRoot);
+
+exit($app->run($baseBranch, $projectRoot));

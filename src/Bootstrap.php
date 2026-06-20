@@ -8,11 +8,11 @@ use Review\Application;
 
 final class Bootstrap
 {
-    public function boot(): Application
+    public function boot(string $projectRoot): Application
     {
-        $config = new Config(
-            dirname(__DIR__) . '/config/config.php'
-        );
+        $config = new Config([
+            'project_root' => $projectRoot,
+        ]);
 
         return new Application($config);
     }

@@ -48,20 +48,18 @@ final class PackageBuilder
 
 	private function buildContextSection(Context $context): string
 	{
-		$files = implode("\n- ", $context->changedFiles);
 		$classes = implode("\n- ", $context->changedClasses);
 		$related = implode("\n- ", $context->relatedNodes);
 
 		return <<<MD
 			## Context Analysis
 
-			### Changed Files
-			- {$files}
-
 			### Changed Classes
+
 			- {$classes}
 
 			### Related Impact Nodes
+
 			- {$related}
 
 			---
