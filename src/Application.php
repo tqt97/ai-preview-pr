@@ -23,12 +23,12 @@ final class Application
 		$this->logger = new Logger();
 	}
 
-	public function run(array $argv): int
+	public function run(string $baseBranch, string $projectRoot): int
 	{
-		$baseBranch = $argv[1] ?? 'release';
-		$currentBranch = $this->getCurrentBranch();
+		$projectRoot = $this->config->get('project_root');
+		$git = new GitService($projectRoot);
+		$currentBranch = $git->getCurrentBranch();
 
-		$git = new GitService();
 		$diff = $git->getDiff($baseBranch, $currentBranch);
 
 		$this->console->section('AI PR REVIEW CLI');
@@ -75,9 +75,6 @@ final class Application
 
 		$this->logger->info('Changed Files:');
 
-		foreach ($context->changedFiles as $file) {
-			$this->console->line(' - ' . $file);
-		}
 
 		$this->logger->info('Changed Classes:');
 
@@ -127,16 +124,5 @@ final class Application
 		// $this->console->line('Check: review/result.md');
 
 		return 0;
-	}
-
-	private function getCurrentBranch(): string
-	{
-		$branch = shell_exec('git rev-parse --abbrev-ref HEAD');
-
-		if ($branch === null) {
-			return 'unknown';
-		}
-
-		return trim($branch);
 	}
 }

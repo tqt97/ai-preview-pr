@@ -117,13 +117,13 @@ npm install -g @google/gemini-cli
 ### Run review
 
 ```bash
-php review.php release
+php review.php release /home/user/projects/my-fuel-app
 ```
 
 or
 
 ```bash
-php review.php main
+php review.php dev /home/user/projects/my-fuel-app
 ```
 
 ---
